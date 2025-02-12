@@ -1,0 +1,57 @@
+import string
+
+def word_counter(filepath):
+    """
+    Counts the frequency of each word in a text file.
+
+    Args:
+        filepath (str): The path to the text file.
+
+    Returns:
+        dict: A dictionary where keys are words and values are their frequencies.
+        Returns an empty dictionary if the file does not exist or an error occurs.
+    """
+    try:
+        with open(filepath, 'r', encoding='utf-8') as file:  # Handles potential encoding issues
+            text = file.read().lower()  # Reads the entire file, converts to lowercase
+
+            # Remove punctuation and split into words
+            text = text.translate(str.maketrans('', '', string.punctuation))
+            words = text.split()
+
+            word_counts = {}
+            for word in words:
+                if word:  # Skip empty strings
+                    word_counts[word] = word_counts.get(word, 0) + 1
+
+            return word_counts
+    except FileNotFoundError:
+        print(f"Error: File not found at {filepath}")
+        return {}
+    except Exception as e:  # Catch any other potential errors during file processing
+        print(f"An error occurred: {e}")
+        return {}
+
+
+def display_results(word_counts):
+    """
+    Displays the word counts neatly.
+
+    Args:
+        word_counts (dict): A dictionary of word counts.
+    """
+    if not word_counts:
+        print("No words to display.")
+        return
+
+    print("Word Counts:")
+    for word, count in sorted(word_counts.items(), key=lambda item: item[1], reverse=True):  # Sort by frequency
+        print(f"{word}: {count}")
+
+
+if _name_ == "_main_":
+    filepath = input("Enter the path to the text file: ")  # Get file path from the user
+    counts = word_counter(filepath)
+
+    if counts:
+        display_results(counts)
